@@ -93,7 +93,7 @@ function CTAButtons() {
         <motion.div
             variants={fadeUp}
             custom={0.15}
-            className="flex flex-wrap items-center gap-3 sm:gap-4"
+            className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6"
         >
             {/* Primary */}
             <motion.button
@@ -142,7 +142,7 @@ function FrameImage() {
                 alt="Renate Scaling Metrics"
                 whileHover={{ scale: 1.01, boxShadow: "0 24px 64px rgba(139,92,246,0.12)" }}
                 transition={{ duration: 0.35, ease: "easeOut" }}
-                className="w-full max-w-4xl h-auto object-contain rounded-2xl"
+                className="w-full max-w-4xl h-auto object-contain "
             />
         </motion.div>
     );

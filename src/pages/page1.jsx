@@ -5,9 +5,9 @@
  * Breakpoints: 375px (mobile) · 768px (tablet) · 1440px+ (desktop)
  *
  * Dependencies (already in project):
- *   - framer-motion          →  npm install framer-motion
- *   - @fortawesome/react-fontawesome + free-solid-svg-icons
- *   - Tailwind CSS
+ * - framer-motion        →  npm install framer-motion
+ * - @fortawesome/react-fontawesome + free-solid-svg-icons
+ * - Tailwind CSS
  */
 
 import React from "react";
@@ -19,9 +19,27 @@ import {
     faArrowRight,
     faEarthAsia,
 } from "@fortawesome/free-solid-svg-icons";
+
+// Assets
 import RenateLogo from "../assets/renate_ai.png";
-import Footer    from "../assets/footer.jpeg";
-import hero      from "../assets/hero_background.png";
+import hero       from "../assets/hero_background.png";
+import google     from "../assets/google.png";
+import github     from "../assets/github.png";
+import linkedin   from "../assets/linkedin.png";
+import notion     from "../assets/notion.png";
+import oracle     from "../assets/oracle.png";
+import salesforce from "../assets/salesforce.png";
+
+/* ─── Custom Styles for Left-to-Right Marquee ────────────────── */
+const marqueeStyle = `
+  @keyframes marquee-ltr {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0%); }
+  }
+  .animate-marquee-ltr {
+    animation: marquee-ltr 35s linear infinite;
+  }
+`;
 
 /* ─── Animation Variants ─────────────────────────────────────── */
 const fadeUp = {
@@ -51,6 +69,82 @@ const navItemVariant = {
     visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 };
 
+/* ─── Logo Data mapped to imports ────────────────────────────── */
+const LOGOS = [
+  { name: "Google",     src: google },
+  { name: "GitHub",     src: github },
+  { name: "LinkedIn",   src: linkedin },
+  { name: "Notion",     src: notion },
+  { name: "Oracle",     src: oracle },
+  { name: "Salesforce", src: salesforce },
+];
+
+function LogoItem({ name, color, src }) {
+  return (
+    <div className="flex items-center justify-center px-10 shrink-0 cursor-default">
+      {src ? (
+        <img 
+            src={src} 
+            alt={name} 
+            className="h-9 sm:h-11 w-auto object-contain" 
+        />
+      ) : (
+        <span className="flex items-center gap-2 text-[16px] font-bold tracking-tight text-gray-700 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: color || "#ccc" }} />
+          {name}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function TrustedBar() {
+  /* Duplicate the array so the seamless loop works continuously */
+  const items = [...LOGOS, ...LOGOS];
+  
+  return (
+    <motion.section
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.4 }}
+      variants={fadeIn}
+      custom={0}
+      className="w-full bg-[#EFE9FF]/60 border-t border-purple-100 z-10 relative h-[90px] flex justify-center"
+    >
+      {/* Container matching standard page x-axis padding */}
+      <div className="max-w-[1440px] mx-auto w-full px-4 sm:px-8 xl:px-20 flex items-stretch">
+        
+        {/* Static left label */}
+        <div className="relative z-20 flex items-center pr-6 sm:pr-8 border-r border-purple-200 shrink-0">
+          <p className="text-[#8B5CF6] font-semibold text-[13px] sm:text-sm leading-tight whitespace-nowrap">
+            Trusted by<br />100+ organizations
+          </p>
+        </div>
+
+        {/* Marquee track wrapper (overflow hidden keeps logos from bleeding under the text) */}
+        <div className="relative flex-1 overflow-hidden flex items-center ml-2 sm:ml-4">
+          {/* Fade edges inside the scrolling track */}
+          <div className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-r from-[#EFE9FF] to-transparent" />
+          <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-l from-[#EFE9FF] to-transparent" />
+
+          {/* Scrolling container (Left to Right) */}
+          <div
+            className="flex items-center w-max animate-marquee-ltr"
+            onMouseEnter={e => e.currentTarget.style.animationPlayState = "paused"}
+            onMouseLeave={e => e.currentTarget.style.animationPlayState = "running"}
+          >
+            {items.map((logo, i) => (
+              <LogoItem key={i} {...logo} />
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </motion.section>
+  );
+}
+
+
 /* ─── Sub-components ─────────────────────────────────────────── */
 
 /** Single animated nav link */
@@ -77,7 +171,7 @@ function Navbar() {
             className="w-full h-16 sm:h-20 px-4 sm:px-8 xl:px-20 flex items-center justify-between bg-transparent z-20 relative"
         >
             {/* Logo */}
-            <motion.div variants={navItemVariant} className="flex items-center shrink-0">
+            <motion.div variants={navItemVariant} className="flex items-center shrink-0 cursor-pointer">
                 <img
                     src={RenateLogo}
                     alt="Renate AI"
@@ -165,26 +259,20 @@ function HeroContent() {
 
             {/* CTA buttons */}
             <motion.div
-                custom={0.2}
-                variants={fadeUp}
                 className="mt-8 sm:mt-10 flex flex-wrap items-center
                            justify-center lg:justify-start gap-3 w-full sm:w-auto"
             >
                 <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: "0 8px 24px rgba(139,92,246,0.35)" }}
-                    whileTap={{ scale: 0.97 }}
-                    className="bg-[#8B5CF6] text-white text-[13px] font-medium
+                    className="bg-[#9156EC] text-white text-[13px] font-medium
                                px-6 py-3 rounded-full flex items-center gap-3
-                               shadow-md transition-colors hover:bg-[#7C3AED]"
+                               shadow-md transition-colors hover:bg-[#AF7AFF]"
                 >
                     Get Started
                     <motion.span
-                        animate={{ x: [0, 3, 0] }}
-                        transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-                        className="w-5 h-5 rounded-full border border-white/40
-                                   flex items-center justify-center"
+                        className="w-8 h-8 rounded-full 
+                                   flex items-center justify-center bg-[#AF7AFF]"
                     >
-                        <FontAwesomeIcon icon={faArrowRight} className="text-[10px]" />
+                        <FontAwesomeIcon icon={faArrowRight} className="text-[10px]" style={{color:"white"}} />
                     </motion.span>
                 </motion.button>
 
@@ -223,39 +311,13 @@ function HeroGraphic() {
     );
 }
 
-/** Trusted-by logo strip */
-function TrustedBar() {
-    return (
-        <motion.section
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.4 }}
-            variants={fadeIn}
-            custom={0}
-            className="w-full bg-[#EFE9FF]/60 border-t border-purple-100 py-5
-                       px-4 sm:px-8 xl:px-20 flex flex-col md:flex-row items-center
-                       justify-center md:justify-start gap-4 md:gap-8
-                       text-center md:text-left z-10"
-        >
-            <p className="text-[#8B5CF6] font-semibold text-sm max-w-[160px] leading-tight shrink-0">
-                Trusted by 100+ organizations
-            </p>
-            <div className="hidden md:block h-8 w-px bg-purple-300 self-center shrink-0" />
-            <div className="w-full md:flex-grow flex items-center justify-center md:justify-start">
-                <img
-                    src={Footer}
-                    alt="Partner logos"
-                    className="h-6 sm:h-7 md:h-8 w-auto max-w-full object-contain opacity-70"
-                />
-            </div>
-        </motion.section>
-    );
-}
 
 /* ─── Page Root ──────────────────────────────────────────────── */
 export default function RenateHero() {
     return (
         <div className="min-h-screen w-full bg-[#FAF9FF] font-sans relative overflow-x-hidden flex flex-col justify-between">
+            {/* Inject Left-to-Right Marquee Styles */}
+            <style>{marqueeStyle}</style>
 
             {/* ── Navbar ── */}
             <Navbar />
@@ -294,7 +356,7 @@ export default function RenateHero() {
                 <HeroGraphic />
             </main>
 
-            {/* ── Trusted by ── */}
+            {/* ── Trusted by Marquee ── */}
             <TrustedBar />
         </div>
     );
